@@ -16,6 +16,8 @@ IGNORED_GENERATED_DIRECTORY_NAMES = {
     ".pytest_cache",
     ".ruff_cache",
     ".venv",
+    "build",
+    "dist",
 }
 
 BLOCKED_DIRECTORY_NAMES = {

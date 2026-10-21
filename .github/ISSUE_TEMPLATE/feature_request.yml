@@ -1,0 +1,36 @@
+name: Feature request / 改进建议
+description: Describe a workflow problem and a verifiable outcome / 描述问题与完成条件
+title: "[Feature]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Chinese and English are welcome. Explain the production problem before suggesting an implementation.
+        欢迎中文或英文建议。不要附带真实影片、声音参考、密钥或私有项目状态。
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem and workflow stage / 问题与制作阶段
+      description: What task is difficult, and who encounters it? / 哪个任务存在困难，谁会遇到？
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior / 建议行为
+      description: Include alternatives considered and local or provider dependencies.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Verifiable outcome / 可验证的完成条件
+      description: How could a maintainer confirm this is useful and working with synthetic inputs?
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Additional evidence / 补充证据
+      description: Optional sanitized examples, official provider docs or related issues.

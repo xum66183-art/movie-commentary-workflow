@@ -33,3 +33,17 @@ jobs:
         run: python -m pytest
       - name: Lint
         run: python -m ruff check .
+      - name: Offline public demo
+        run: python scripts/run_demo.py --output "$RUNNER_TEMP/offline-demo"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: offline-demo-python-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/offline-demo/release/*
+          if-no-files-found: error
+      - name: Build source release
+        run: python -m build --sdist --outdir "$RUNNER_TEMP/workflow-dist"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: source-release-python-${{ matrix.python-version }}
+          path: ${{ runner.temp }}/workflow-dist/*.tar.gz
+          if-no-files-found: error

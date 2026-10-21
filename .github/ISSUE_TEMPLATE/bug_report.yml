@@ -1,0 +1,59 @@
+name: Bug report / 问题报告
+description: Report a reproducible problem with sanitized evidence / 提交可复现问题
+title: "[Bug]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Chinese and English are welcome. Use synthetic inputs where possible.
+        请勿上传电影、声音参考、API 密钥、完整供应商响应或含本机身份路径的项目数据。安全问题请先阅读 SECURITY.md。
+  - type: input
+    id: version
+    attributes:
+      label: Version / 版本
+      description: Release tag or full commit hash / Release tag 或提交号
+      placeholder: v0.3.0 or commit hash
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment / 运行环境
+      description: OS, Python, FFmpeg and relevant dependency versions. Remove personal paths.
+      placeholder: macOS or Linux version; python --version; ffmpeg -version
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction / 复现步骤
+      description: Minimal commands and synthetic input description. Does scripts/run_demo.py reproduce it?
+      placeholder: |
+        1. Install ...
+        2. Run ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected and actual behavior / 预期与实际行为
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized output / 脱敏输出
+      description: Relevant error text only; remove secrets, user paths and private content.
+      render: text
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component / 涉及模块
+      options:
+        - Offline demo or indexing / 离线演示或索引
+        - Installation or diagnostics / 安装或环境诊断
+        - Voice provider helper / 语音辅助工具
+        - Skills or production state / 技能或制作状态
+        - Documentation or other / 文档或其他
