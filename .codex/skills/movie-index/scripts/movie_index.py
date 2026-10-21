@@ -35,7 +35,15 @@ PROMPT_VERSION = "visible-frames-1"
 MODELS = ("qwen3-vl-flash", "qwen3-vl-plus")
 DEFAULT_BASE = "https://dashscope.aliyuncs.com/compatible-mode/v1"
 SKILL_ROOT = Path(__file__).resolve().parents[1]
-REPOSITORY_ROOT = SKILL_ROOT.parents[2]
+# A copied skill lives under the user's home or a custom skill directory, whose
+# ancestor is not the public checkout. Protect the whole tree only in a checkout.
+_repository_candidate = SKILL_ROOT.parent.parent.parent
+REPOSITORY_ROOT = (
+    _repository_candidate
+    if (_repository_candidate / "scripts/install_skills.py").is_file()
+    and (_repository_candidate / "schemas/project.schema.json").is_file()
+    else None
+)
 ROOT = Path(os.environ.get("MOVIE_WORKFLOW_ROOT", Path.home() / "MovieCommentaryWorkflow"))
 FACT_SCHEMA = {
     "type": "object",
@@ -132,7 +140,9 @@ def read_json(path):
 def project_root(path):
     path = Path(path).expanduser().resolve()
     # Resolve symlinks before comparing so private output cannot enter this checkout.
-    protected = [REPOSITORY_ROOT.resolve(), SKILL_ROOT.resolve()]
+    protected = [SKILL_ROOT.parent.resolve()]
+    if REPOSITORY_ROOT is not None:
+        protected.append(REPOSITORY_ROOT.resolve())
     if any(path.is_relative_to(parent) for parent in protected):
         raise ValueError("真实项目必须位于公开仓库和已安装技能目录之外。")
     return path

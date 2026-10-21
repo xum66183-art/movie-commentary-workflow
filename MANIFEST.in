@@ -1,0 +1,15 @@
+include AGENTS.md CHANGELOG.md CONTRIBUTING.md LICENSE NOTICE README.md README.en.md SECURITY.md
+include .gitignore .env.example pyproject.toml MANIFEST.in
+recursive-include .github *.md *.yml *.yaml
+recursive-include .codex/skills *.md *.py *.yaml *.json .env.example
+recursive-include scripts *.py *.swift
+recursive-include schemas *.json
+recursive-include templates *.json *.md .gitignore
+recursive-include examples *.json *.md
+recursive-include docs *.md *.json *.txt *.svg *.html
+recursive-include tests *.py
+prune .git
+prune .venv
+prune build
+prune dist
+global-exclude *.py[cod] .DS_Store

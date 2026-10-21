@@ -8,7 +8,7 @@
 
 - `DASHSCOPE_API_KEY`：密钥，只存在本地配置，不写进项目、日志或 Git。
 - `MOVIE_DASHSCOPE_REGION=cn-beijing`。
-- `DASHSCOPE_BASE_URL`：默认已验证的 `https://dashscope.aliyuncs.com/compatible-mode/v1`。可改为控制台提供的北京业务空间专属地址。
+- `DASHSCOPE_BASE_URL`：默认 `https://dashscope.aliyuncs.com/compatible-mode/v1`。可改为控制台提供的北京业务空间专属地址；模型权限与可用地域以供应商账户为准。
 - `QWEN_VISION_MODEL=qwen3-vl-flash`：默认视觉模型，可在单次运行指定 Plus。
 
 源码随本技能分发。先将 MOVIE_WORKFLOW_ROOT 设置为仓库之外的私有目录，示例命令按此约定存放产物。
@@ -54,7 +54,7 @@ Flash 和 Plus 的响应与检索来源分别保留，不覆盖。原始响应�
 
 `evidence` 为镜头或视觉单元导出三张按时间排序的原片图片和有前后余量的片段，保留存在的原声。`evidence.json` 记录原片区间与时间坐标。
 
-`verify` 检查来源指纹、完整时间轴、图片可读性、字幕关联及数据库完整性。项目与正式状态只在初建时创建；后续工具不修改导演锁或制作状态。通过结构检查后，仍需按 `retrieval-and-validation.md` 做代表性检索和连续带声看片；报告中的 `verified` 始终为 false，由唯一总导演完成正式认可。
+`verify` 检查来源指纹、完整时间轴、图片可读性、字幕关联及数据库完整性。项目与正式状态只在初建时创建；后续工具不修改导演锁或制作状态。通过结构检查后，仍需按 `retrieval-and-validation.md` 做代表性检索和连续带声看片；报告中的 `index_verified` 始终为 false，由唯一总导演完成正式认可。
 
 官方接口：[图像与视频理解](https://help.aliyun.com/zh/model-studio/vision)。官方费用：[百炼价格](https://help.aliyun.com/zh/model-studio/model-pricing)。
 
