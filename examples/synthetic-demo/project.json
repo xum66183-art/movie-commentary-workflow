@@ -1,0 +1,23 @@
+{
+  "$schema": "../../schemas/project.schema.json",
+  "schema_version": 1,
+  "id": "synthetic-demo-001",
+  "title": "Synthetic Demo",
+  "source": {
+    "video": {
+      "path": "generated/source.mp4",
+      "provenance": "synthetic media generated locally; not included in the repository"
+    },
+    "subtitle": null
+  },
+  "media": {
+    "duration_ms": 6000,
+    "width": 1280,
+    "height": 720,
+    "fps": "24/1"
+  },
+  "paths": {
+    "production_state": "production/state.json",
+    "director_memory": "DIRECTOR_MEMORY.md"
+  }
+}

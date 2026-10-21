@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影镜头索引"
+  short_description: "解析原片、字幕、技术切点与视觉事实，建立可搜索镜头数据库"
+  default_prompt: "使用 $movie-index 为这部电影建立或验证可搜索的镜头数据库。"

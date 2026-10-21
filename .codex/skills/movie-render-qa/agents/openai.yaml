@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影渲染与验收"
+  short_description: "快速交付可观看样片，并为用户认可后的正式成片做严格技术验收"
+  default_prompt: "使用 $movie-render-qa 忠实渲染锁定方案；样片基础可播放后立即交付用户。"

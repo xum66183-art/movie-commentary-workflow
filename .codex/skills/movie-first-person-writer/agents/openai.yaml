@@ -1,0 +1,4 @@
+interface:
+  display_name: "第一人称电影执笔人"
+  short_description: "理解全片并撰写信息边界准确、可供编导实现的第一人称解说稿"
+  default_prompt: "使用 $movie-first-person-writer 理解整部电影并撰写第一人称解说稿。"

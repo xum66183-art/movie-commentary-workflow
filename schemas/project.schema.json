@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/movie-commentary-workflow/project.schema.json",
+  "title": "Movie commentary project",
+  "type": "object",
+  "required": ["schema_version", "id", "source", "paths"],
+  "anyOf": [
+    {"required": ["title"]},
+    {"required": ["title_zh"]},
+    {"required": ["title_original"]}
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "id": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 128,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {"type": "string", "minLength": 1},
+    "title_zh": {"type": "string", "minLength": 1},
+    "title_original": {"type": "string", "minLength": 1},
+    "year": {"type": "integer", "minimum": 1888, "maximum": 2200},
+    "canonical_root": {"type": "string", "minLength": 1},
+    "source": {
+      "type": "object",
+      "required": ["video"],
+      "properties": {
+        "video": {"$ref": "#/$defs/source_file"},
+        "subtitle": {
+          "oneOf": [
+            {"type": "null"},
+            {"$ref": "#/$defs/source_file"}
+          ]
+        },
+        "provenance": {"type": "string"}
+      },
+      "additionalProperties": true
+    },
+    "media": {"type": "object"},
+    "paths": {
+      "type": "object",
+      "required": ["production_state", "director_memory"],
+      "properties": {
+        "production_state": {"type": "string", "minLength": 1},
+        "director_memory": {"type": "string", "minLength": 1}
+      },
+      "additionalProperties": {"type": "string"}
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source_file": {
+      "type": "object",
+      "required": ["path"],
+      "properties": {
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"},
+        "size_bytes": {"type": "integer", "minimum": 0},
+        "mtime_epoch": {"type": "integer", "minimum": 0},
+        "language": {"type": "string"},
+        "provenance": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

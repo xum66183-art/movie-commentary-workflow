@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影角色语音制作"
+  short_description: "用千问、MiniMax、Fish 制作电影独白，并用火山 ASR 补齐时间戳"
+  default_prompt: "使用 $movie-voice-tts 制作电影角色旁白，并在供应商没有原生时间戳时用火山引擎补齐。"

@@ -1,0 +1,18 @@
+{
+  "$schema": "../../schemas/project.schema.json",
+  "schema_version": 1,
+  "id": "replace-with-stable-film-id",
+  "title": "Replace with film title",
+  "source": {
+    "video": {
+      "path": "/absolute/private/path/to/source.mp4",
+      "provenance": "user-provided local file"
+    },
+    "subtitle": null
+  },
+  "media": {},
+  "paths": {
+    "production_state": "production/state.json",
+    "director_memory": "DIRECTOR_MEMORY.md"
+  }
+}

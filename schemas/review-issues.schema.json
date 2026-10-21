@@ -1,0 +1,93 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/movie-commentary-workflow/review-issues.schema.json",
+  "title": "Second review issues",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "film_id",
+    "render_version",
+    "render_sha256",
+    "review_status",
+    "coverage",
+    "issues"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "film_id": {"type": "string", "minLength": 3},
+    "render_version": {"type": "string", "minLength": 1},
+    "render_sha256": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+    "review_status": {
+      "enum": ["IN_PROGRESS", "CHANGES_REQUIRED", "SECOND_REVIEW_PASS"]
+    },
+    "coverage": {
+      "type": "object",
+      "required": ["first_pass_complete", "second_pass_complete"],
+      "properties": {
+        "first_pass_start_ms": {"type": "integer", "minimum": 0},
+        "first_pass_end_ms": {"type": "integer", "minimum": 0},
+        "first_pass_complete": {"type": "boolean"},
+        "second_pass_complete": {"type": "boolean"}
+      },
+      "additionalProperties": true
+    },
+    "issues": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "severity",
+          "status",
+          "timeline_start_ms",
+          "timeline_end_ms",
+          "observation",
+          "required_outcome",
+          "owner",
+          "rechecked"
+        ],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "severity": {"enum": ["blocking", "suggestion"]},
+          "status": {
+            "enum": ["open", "director_decided", "rendered", "verified", "wont_fix"]
+          },
+          "timeline_start_ms": {"type": "integer", "minimum": 0},
+          "timeline_end_ms": {"type": "integer", "minimum": 1},
+          "first_visible_frame": {"type": "integer", "minimum": 0},
+          "category": {"type": "string"},
+          "boundary_kind": {"type": "string"},
+          "clip_ids": {"type": "array", "items": {"type": "string"}},
+          "source_ranges_ms": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "prefixItems": [
+                {"type": "integer", "minimum": 0},
+                {"type": "integer", "minimum": 1}
+              ],
+              "items": false
+            }
+          },
+          "observation": {"type": "string", "minLength": 1},
+          "evidence": {"type": "array", "items": {"type": "string"}},
+          "required_outcome": {"type": "string", "minLength": 1},
+          "owner": {
+            "enum": [
+              "movie-direct",
+              "movie-render-qa",
+              "movie-first-person-writer",
+              "movie-voice-tts"
+            ]
+          },
+          "director_decision": {"type": ["string", "null"]},
+          "resolved_by_version": {"type": ["string", "null"]},
+          "rechecked": {"type": "boolean"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

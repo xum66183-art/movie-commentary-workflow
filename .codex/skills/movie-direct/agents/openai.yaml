@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影解说编导"
+  short_description: "以叙事节拍制作自然样片，严格守住关键事实并快速交付用户"
+  default_prompt: "使用 $movie-direct 按叙事节拍制作电影解说样片，并优先交给用户判断创意方向。"

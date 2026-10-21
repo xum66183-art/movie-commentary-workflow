@@ -1,0 +1,27 @@
+{
+  "$schema": "../../../schemas/state.schema.json",
+  "schema_version": 1,
+  "film_id": "replace-with-stable-film-id",
+  "title": "Replace with film title",
+  "current_status": "PROJECT_CREATED",
+  "workflow_control": {
+    "status": "ACTIVE",
+    "execution_mode": "SINGLE_MAIN_DIRECTOR",
+    "fixed_role_threads": false,
+    "master_skill": "movie-master-director"
+  },
+  "canonical_project": "project.json",
+  "locks": {
+    "index": null,
+    "script": null,
+    "voice": null,
+    "narration": null,
+    "director_plan": null,
+    "final_render": null,
+    "second_review": null
+  },
+  "next_legal_action": {
+    "responsible_skill": "movie-index",
+    "action": "Verify the source and build or reuse the searchable evidence index."
+  }
+}

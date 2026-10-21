@@ -1,0 +1,7 @@
+# A real film project is private by default.
+*
+!.gitignore
+!project.json
+!DIRECTOR_MEMORY.md
+!production/
+!production/state.json

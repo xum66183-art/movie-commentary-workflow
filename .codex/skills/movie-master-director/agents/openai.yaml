@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影解说总导演"
+  short_description: "让同一个主脑跨窗口连续完成不同电影的完整解说生产流程"
+  default_prompt: "使用 $movie-master-director 接管这部电影并从当前锁定状态继续制作。"

@@ -1,0 +1,33 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/movie-commentary-workflow/audio-mix-plan.schema.json",
+  "title": "Audio mix plan",
+  "type": "object",
+  "required": ["schema_version", "film_id", "duration_ms", "events"],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "film_id": {"type": "string", "minLength": 3},
+    "duration_ms": {"type": "integer", "minimum": 1},
+    "events": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "start_ms", "end_ms"],
+        "properties": {
+          "id": {"type": "string", "minLength": 1},
+          "type": {
+            "enum": ["narration", "source_dialogue", "ambience", "silence", "music"]
+          },
+          "start_ms": {"type": "integer", "minimum": 0},
+          "end_ms": {"type": "integer", "minimum": 1},
+          "source": {"type": "string"},
+          "gain_db": {"type": "number"},
+          "purpose": {"type": "string"}
+        },
+        "additionalProperties": true
+      }
+    }
+  },
+  "additionalProperties": true
+}

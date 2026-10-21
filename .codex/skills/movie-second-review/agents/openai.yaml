@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影全片复检员"
+  short_description: "逐秒完整复看成片，定位瞬闪、秒切、跳画面与声音接缝并回交编导"
+  default_prompt: "使用 $movie-second-review 完整复看已渲染成片，逐项记录瞬闪、秒切、节奏和声音问题，并把创意问题交回 04 编导。"

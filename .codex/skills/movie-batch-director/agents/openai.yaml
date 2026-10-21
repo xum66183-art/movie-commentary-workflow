@@ -1,0 +1,4 @@
+interface:
+  display_name: "电影批次副导演"
+  short_description: "让临时副导演按统一循环独立制作可比较的电影批次候选样片"
+  default_prompt: "使用 $movie-batch-director 为指定旁白批次制作一版独立候选样片。"

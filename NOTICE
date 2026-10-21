@@ -1,0 +1,10 @@
+Movie Commentary Workflow — integrated edition
+
+Based on https://github.com/straighttttt/movie-commentary-workflow
+Upstream base: 3d50c17 (Initial open-source skills edition).
+The upstream Apache License 2.0 is preserved in LICENSE.
+
+This edition integrates reusable local shot-indexing, voice-cloning helpers,
+macOS OCR/music utilities, portable setup instructions and synthetic tests.
+It does not distribute film footage, subtitles, generated films, cloned voices,
+API credentials, proprietary models or operating-system sound banks.

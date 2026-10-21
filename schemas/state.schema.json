@@ -1,0 +1,131 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.invalid/movie-commentary-workflow/state.schema.json",
+  "title": "Movie commentary production state",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "film_id",
+    "title",
+    "current_status",
+    "workflow_control",
+    "locks",
+    "next_legal_action"
+  ],
+  "properties": {
+    "$schema": {"type": "string"},
+    "schema_version": {"const": 1},
+    "film_id": {
+      "type": "string",
+      "minLength": 3,
+      "pattern": "^[a-z0-9][a-z0-9-]*$"
+    },
+    "title": {"type": "string", "minLength": 1},
+    "updated_at": {"type": "string", "format": "date-time"},
+    "current_status": {"$ref": "#/$defs/workflow_status"},
+    "workflow_control": {
+      "type": "object",
+      "required": ["status", "execution_mode", "master_skill"],
+      "properties": {
+        "status": {"enum": ["ACTIVE", "PAUSED"]},
+        "execution_mode": {"const": "SINGLE_MAIN_DIRECTOR"},
+        "fixed_role_threads": {"type": "boolean"},
+        "master_skill": {"const": "movie-master-director"}
+      },
+      "additionalProperties": true
+    },
+    "canonical_project": {"type": "string", "minLength": 1},
+    "locks": {
+      "type": "object",
+      "required": [
+        "index",
+        "script",
+        "voice",
+        "narration",
+        "director_plan",
+        "final_render",
+        "second_review"
+      ],
+      "properties": {
+        "index": {"$ref": "#/$defs/nullable_lock"},
+        "script": {"$ref": "#/$defs/nullable_lock"},
+        "voice": {"$ref": "#/$defs/nullable_lock"},
+        "narration": {"$ref": "#/$defs/nullable_lock"},
+        "director_plan": {"$ref": "#/$defs/nullable_lock"},
+        "final_render": {"$ref": "#/$defs/nullable_lock"},
+        "second_review": {"$ref": "#/$defs/nullable_lock"}
+      },
+      "additionalProperties": true
+    },
+    "next_legal_action": {
+      "oneOf": [
+        {"type": "null"},
+        {
+          "type": "object",
+          "required": ["responsible_skill", "action"],
+          "properties": {
+            "responsible_skill": {
+              "enum": [
+                "movie-master-director",
+                "movie-index",
+                "movie-first-person-writer",
+                "movie-voice-tts",
+                "movie-direct",
+                "movie-render-qa",
+                "movie-second-review",
+                "movie-batch-director"
+              ]
+            },
+            "action": {"type": "string", "minLength": 1}
+          },
+          "additionalProperties": true
+        }
+      ]
+    }
+  },
+  "$defs": {
+    "sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "workflow_status": {
+      "enum": [
+        "PROJECT_CREATED",
+        "INDEX_VERIFIED",
+        "DRAFT_READY",
+        "DIRECTOR_SCRIPT_REVIEW",
+        "SCRIPT_LOCKED",
+        "VOICE_LOCKED",
+        "NARRATION_LOCKED",
+        "DIRECTOR_PROXY_PLAN_LOCKED",
+        "DIRECTOR_PROXY_RENDERED",
+        "USER_CREATIVE_REVIEW",
+        "USER_SAMPLE_APPROVED",
+        "DIRECTOR_PLAN_LOCKED",
+        "FINAL_RENDERED",
+        "SECOND_REVIEW",
+        "SECOND_REVIEW_PASS",
+        "FINAL_VERIFIED"
+      ]
+    },
+    "lock": {
+      "type": "object",
+      "required": ["status"],
+      "properties": {
+        "status": {"type": "string", "minLength": 1},
+        "version": {"type": "string", "minLength": 1},
+        "artifact": {"type": "string", "minLength": 1},
+        "path": {"type": "string", "minLength": 1},
+        "sha256": {"$ref": "#/$defs/sha256"}
+      },
+      "additionalProperties": true
+    },
+    "nullable_lock": {
+      "oneOf": [
+        {"type": "null"},
+        {"$ref": "#/$defs/lock"}
+      ]
+    }
+  },
+  "additionalProperties": true
+}
