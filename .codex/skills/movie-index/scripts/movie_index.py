@@ -535,9 +535,9 @@ def prepare(args, root):
             0,
             duration,
             *(
-                round(start.seconds * 1000)
+                round(start.get_seconds() * 1000)
                 for start, _ in scenes
-                if 0 < round(start.seconds * 1000) < duration
+                if 0 < round(start.get_seconds() * 1000) < duration
             ),
         }
     )
