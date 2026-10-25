@@ -15,6 +15,10 @@ description: 忠实执行已锁定的电影解说样片或正式导演方案，�
 4. 新建输出或修改渲染结构前读取 [references/render-contract.md](references/render-contract.md)。
 5. 验收前读取 [references/qa-checklist.md](references/qa-checklist.md)。
 
+## 通用执行器
+
+安装仓库的 Python 包后，普通切镜方案可用 `python -m movie_workflow.render` 执行。先读取 [references/local-executor.md](references/local-executor.md)，不支持的创意字段必须停止，不得自行降级。该工具的技术收据不自动修改正式状态。
+
 ## 渲染前检查
 
 样片与正式成片都必须确认：

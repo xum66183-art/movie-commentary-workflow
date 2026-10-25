@@ -4,7 +4,7 @@
 
 ## 烧录字幕 OCR
 
-先用 FFmpeg 在字幕区域按固定步长取 JPG，文件名须为从 `000001.jpg` 开始的连续数字。OCR 输出原始候选和置信度，采样时间不是精确字幕起止时间，仍需人工纠错与合并。
+先用 FFmpeg 在字幕区域按固定步长取 JPG，文件名须为从 `000001.jpg` 开始的连续数字。OCR 输出原始候选和置信度，采样时间不是精确字幕起止时间，仍需人工纠错。可运行 `python -m movie_workflow.subtitles INPUT_JSONL OUTPUT_SRT` 合并连续重复字幕并生成低置信度清单；边界仍是采样近似值。
 
 ```bash
 swift scripts/macos/local_subtitle_ocr.swift /absolute/path/to/cropped-frames /absolute/path/to/ocr.jsonl 0 0.5

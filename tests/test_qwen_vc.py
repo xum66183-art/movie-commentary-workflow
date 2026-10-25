@@ -51,3 +51,33 @@ def test_metadata_redacts_key_without_corrupting_empty_key(tmp_path: Path):
     assert json.loads(output.read_text()) == {"text": "test"}
     audition.save(output, {"token": "fake-credential"}, "fake-credential")
     assert "fake-credential" not in output.read_text()
+
+
+def test_locked_inputs_accept_project_relative_artifact(tmp_path, monkeypatch):
+    from movie_workflow.io import sha256
+
+    (tmp_path / "production").mkdir()
+    (tmp_path / "text.txt").write_text("保持原文。")
+    (tmp_path / "script.json").write_text(
+        json.dumps(
+            {
+                "status": "SCRIPT_LOCKED",
+                "narration_text": {"artifact": "text.txt", "sha256": sha256(tmp_path / "text.txt")},
+            }
+        )
+    )
+    (tmp_path / "voice.json").write_text(
+        json.dumps({"status": "VOICE_LOCKED", "provider": "qwen", "model": audition.MODEL})
+    )
+    locks = {
+        name: {
+            "artifact": name + ".json",
+            "status": name.upper() + "_LOCKED",
+            "sha256": sha256(tmp_path / (name + ".json")),
+            "user_confirmed": True,
+        }
+        for name in ("script", "voice")
+    }
+    (tmp_path / "production/state.json").write_text(json.dumps({"locks": locks}))
+    monkeypatch.chdir(tmp_path.parent)
+    assert narration.locked_inputs(tmp_path)[2] == "保持原文。"

@@ -20,7 +20,7 @@ python scripts/doctor.py --index
 python scripts/run_demo.py --output "$HOME/movie-workflow-demo"
 ```
 
-`--output` 必须是**仓库外、尚不存在的绝对路径**，路径及其父目录不能是符号链接。如果该目录已有内容，换一个新目录。使用 Release 源码包时，解压后进入完整源码目录执行同样的安装和运行命令；保留整个目录，脚本、技能和合同均从源码树读取。本版支持完整 checkout 或源码归档；wheel 只安装依赖元数据，不含可独立运行的工具。
+`--output` 必须是**仓库外、尚不存在的绝对路径**，路径及其父目录不能是符号链接。如果该目录已有内容，换一个新目录。使用 Release 源码包时，解压后进入完整源码目录执行同样的安装和运行命令；保留整个目录，脚本、技能和合同均从源码树读取。本版支持完整 checkout 或源码归档；wheel 现在包含 `movie_workflow` 执行包；索引技能、模板和旧演示仍需完整源码目录。
 
 演示生成 6 秒原创几何画面、合成音调和合成字幕，实际运行 `prepare`、`search`、`evidence` 和 `verify`，并输出可播放说明视频、证据片段、检索记录和 SHA-256 校验清单。可分享的文件位于 `$HOME/movie-workflow-demo/release/`；包含本机路径和数据库的 `project/` 保留在本地。完整输出说明见 [演示指南](docs/demo.md)。
 
@@ -38,6 +38,12 @@ python scripts/run_demo.py --output "$HOME/movie-workflow-demo"
 | 创意阶段、制作状态、数据合同和复检流程 | [工作流](docs/workflow.md)、[合同](docs/data-contracts.md) | Codex 技能指导、连续带声看片与人工判断 |
 
 镜头编排与最终渲染按每个项目的导演方案执行。当前没有适用于任意影片的一键成片器；技术检查也不能代替剧情核对、声音授权或用户样片认可。供应商模型、地域、权限和价格以各供应商当前说明为准。
+
+## v0.4 执行能力
+
+新增统一的项目锁与 SHA-256 校验、配音进程锁与预算预检、可回滚技能升级、OCR 转 SRT，以及按锁定方案执行的普通切镜渲染器。原有离线索引演示和发布流程完整保留。
+
+运行 `python -m movie_workflow.demo --project /absolute/path/to/new-private-demo` 可额外验证模拟旁白、字幕、混音、成片解码和增量缓存。它使用本地正弦音调，不生成真实讲话、不调用付费 API、不登记真实创意认可。完整用法与边界见 **[执行工具](docs/execution-tools.md)**。
 
 ## 核心原则
 
@@ -80,7 +86,7 @@ python scripts/install_skills.py --dry-run
 python scripts/install_skills.py
 ```
 
-安装器遇到同名技能会停止，先备份现有技能再处理更新。`examples/synthetic-demo/` 是用于合同检查的元数据示例；可执行媒体演示使用上面的 `run_demo.py`。
+普通安装遇到同名技能仍会停止；可使用带备份与回滚保护的 `--upgrade`，见执行工具说明。`examples/synthetic-demo/` 是用于合同检查的元数据示例；可执行媒体演示使用上面的 `run_demo.py`。
 
 旧项目接入新版状态合同时，先阅读 [状态迁移](docs/migration.md)，不要直接覆盖原状态文件。
 

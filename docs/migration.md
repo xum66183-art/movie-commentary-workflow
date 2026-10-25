@@ -41,3 +41,7 @@ python scripts/validate_project.py /absolute/path/to/private-film-project --json
 - 状态文件与导演记忆冲突时的最终判断。
 
 这些项目必须由总导演依据用户反馈、指纹和现有锁明确确认。
+
+## v0.4 执行检查
+
+`--check-artifacts` 除文件存在外还要求 sha256 匹配。锁可使用 artifact 或 path；两者同时出现须指向同一文件。配音与渲染统一按项目根目录解析相对路径，并遵守项目声明的状态文件位置。旧项目缺少指纹时必须核对采用产物后补录，不能从目录时间推断版本。

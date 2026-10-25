@@ -84,12 +84,16 @@ def test_demo_runs_real_cli_and_publishes_only_synthetic_receipts(tmp_path):
     assert summary["index"]["visual_unit_count"] == 6
     assert summary["search"]["query"] == "我穿过边界"
     assert summary["workflow"] == {
-        "current_status": "PROJECT_CREATED", "index_lock": None,
-        "index_verified": False, "manual_review_required": True,
-        "api_attempts": 0, "model_observations": 0,
+        "current_status": "PROJECT_CREATED",
+        "index_lock": None,
+        "index_verified": False,
+        "manual_review_required": True,
+        "api_attempts": 0,
+        "model_observations": 0,
     }
     actual_index_commands = [
-        entry["argv"][2] for entry in transcript["commands"]
+        entry["argv"][2]
+        for entry in transcript["commands"]
         if len(entry["argv"]) > 2 and entry["argv"][1].endswith("scripts/movie_index.py")
     ]
     assert set(actual_index_commands) == {"prepare", "search", "evidence", "verify"}
@@ -97,8 +101,15 @@ def test_demo_runs_real_cli_and_publishes_only_synthetic_receipts(tmp_path):
     assert str(output) not in transcript_text
     assert str(demo.REPOSITORY_ROOT) not in transcript_text
     assert set(path.name for path in release.iterdir()) == {
-        "source.mp4", "source.srt", "evidence.mp4", "demo.mp4", "preview.png",
-        "summary.json", "transcript.json", "README.md", "SHA256SUMS",
+        "source.mp4",
+        "source.srt",
+        "evidence.mp4",
+        "demo.mp4",
+        "preview.png",
+        "summary.json",
+        "transcript.json",
+        "README.md",
+        "SHA256SUMS",
     }
     for name in ("summary.json", "transcript.json", "README.md"):
         public_text = (release / name).read_text()

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.0
+
+- Shared project-relative artifact/path resolution, paused-state checks and SHA-256 verification.
+- Process locks and reconciliation receipts for paid voice workflows; Qwen VC request/character and optional estimated-cost preflight.
+- Strict cut-only renderer with explicit audio, subtitles, cache reuse and technical receipts that do not adopt creative versions.
+- Offline synthetic rendering fixture, conservative OCR-to-SRT grouping, version/config diagnostics and reversible skill upgrades.
+- Runnable Python package in wheels; original source demo and release workflow preserved. Linux/macOS validation added.
+
+
 版本记录区分源码版本与 GitHub Release。正式附件、提交号和发布说明以 [Releases](https://github.com/xum66183-art/movie-commentary-workflow/releases) 为准。Changes below distinguish source versions from published releases.
 
 ## [0.3.0] - 2026-10-21

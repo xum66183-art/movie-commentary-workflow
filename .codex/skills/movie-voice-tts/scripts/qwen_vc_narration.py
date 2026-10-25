@@ -13,6 +13,9 @@ from urllib.parse import urlsplit, urlunsplit
 import requests
 from qwen_vc_audition import BASE, MODEL, save
 
+from movie_workflow.io import checked_lock, read_state, verify_reference
+from movie_workflow.voice_guard import guarded_operation, guarded_part, request_budget
+
 
 def sha(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
@@ -29,25 +32,23 @@ def make_plan(text):
 
 
 def locked_inputs(project):
-    state = json.loads((project / "production/state.json").read_text())
-    locks = state["locks"]
-    for name in ("script", "voice"):
-        lock = locks[name]
-        if not lock or sha(lock["path"]) != lock["sha256"] or not lock.get("user_confirmed"):
-            raise ValueError("缺少有效的用户确认锁：" + name)
-    script = json.loads(Path(locks["script"]["path"]).read_text())
-    voice = json.loads(Path(locks["voice"]["path"]).read_text())
+    state = read_state(project, active=True)
+    paths = {
+        name: checked_lock(project, state, name, confirmed=True) for name in ("script", "voice")
+    }
+    script = json.loads(paths["script"].read_text(encoding="utf-8"))
+    voice = json.loads(paths["voice"].read_text(encoding="utf-8"))
     if script["status"] != "SCRIPT_LOCKED" or voice["status"] != "VOICE_LOCKED":
         raise ValueError("文稿与音色未锁定")
     if voice["model"] != MODEL or voice["provider"] != "qwen":
         raise ValueError("采用音色不属于本模型，禁止切换")
     source = script["narration_text"]
-    if sha(source["path"]) != source["sha256"]:
-        raise ValueError("锁定文稿指纹不符")
-    text = Path(source["path"]).read_text(encoding="utf-8")
+    source_path = verify_reference(project, source)
+    text = source_path.read_text(encoding="utf-8")
     return source, voice, text
 
 
+@guarded_part
 def generate_part(folder, row, voice, key):
     folder.mkdir(parents=True, exist_ok=True)
     mp = folder / "metadata.json"
@@ -151,10 +152,11 @@ def generate_part(folder, row, voice, key):
     return meta
 
 
+@guarded_operation
 def run_narration(args):
     key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
     try:
-        if not key:
+        if not key and not args.dry_run:
             raise ValueError("缺少DASHSCOPE_API_KEY")
         project = args.project.resolve()
         source, voice, text = locked_inputs(project)
@@ -195,9 +197,20 @@ def run_narration(args):
                     )
                 )
                 return 0
+        budget = request_budget(plan, folder, args, voice=voice["voice_id"], model=MODEL)
+        save(folder / "budget.json", budget, key)
         save(pp, manifest, key)
         if args.dry_run:
-            print(json.dumps({"status": "DRY_RUN_OK", "parts": len(plan), "voice_reused": True}))
+            print(
+                json.dumps(
+                    {
+                        "status": "DRY_RUN_OK",
+                        "parts": len(plan),
+                        "voice_reused": True,
+                        "budget": budget,
+                    }
+                )
+            )
             return 0
         metas = []
         for row in plan:
@@ -251,7 +264,9 @@ def run_narration(args):
                 "duration_seconds": cursor / 24000,
                 "part_offsets": offsets,
                 "synthesis_requests": sum(m["synthesis_requests"] for m in metas),
-                "usage_characters": sum(m.get("usage", {}).get("characters", 0) for m in metas),
+                "usage_characters": sum((m.get("usage") or {}).get("characters", 0) for m in metas),
+                "budget": budget,
+                "usage_missing_parts": sum(not isinstance(m.get("usage"), dict) for m in metas),
                 "timestamp_source": None,
                 "assistant_listened": False,
             },

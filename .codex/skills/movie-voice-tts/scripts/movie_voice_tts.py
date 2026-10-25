@@ -726,6 +726,10 @@ def build_parser() -> argparse.ArgumentParser:
     qfull.add_argument("--operation-dir", type=Path, required=True)
     qfull.add_argument("--env-file", type=Path, required=True)
     qfull.add_argument("--dry-run", action="store_true")
+    qfull.add_argument("--max-new-requests", type=int, default=20)
+    qfull.add_argument("--max-billable-characters", type=int, default=20000)
+    qfull.add_argument("--price-per-10k", type=float)
+    qfull.add_argument("--max-estimated-cost", type=float)
 
     for provider in KEY_NAMES:
         child = subparsers.add_parser(provider)
@@ -783,8 +787,7 @@ def validate_args(args: argparse.Namespace) -> None:
         raise ValueError(f"{args.provider} 输出文件必须使用 {expected_suffix} 后缀")
 
 
-def main() -> int:
-    args = build_parser().parse_args()
+def execute(args) -> int:
     load_default_env()
     if args.provider == "check":
         return check_environment()
@@ -849,8 +852,28 @@ def main() -> int:
         print(f"生成完成：{args.output}")
         return 0
     except Exception as exc:  # noqa: BLE001 - 命令行只输出简洁错误
-        print(str(exc), file=sys.stderr)
+        reason = str(exc)
+        for name in (*KEY_NAMES.values(), "VOLCENGINE_TTS_API_KEY"):
+            if os.environ.get(name):
+                reason = reason.replace(os.environ[name], "[REDACTED]")
+        print(reason, file=sys.stderr)
         return 1
+
+
+def main() -> int:
+    from movie_workflow.voice_guard import legacy_operation
+
+    args = build_parser().parse_args()
+    if args.provider in KEY_NAMES and not args.dry_run:
+        try:
+            return legacy_operation(args, execute)
+        except (OSError, ValueError, RuntimeError) as exc:
+            print(
+                type(exc).__name__ + ": paid operation stopped; inspect local receipt",
+                file=sys.stderr,
+            )
+            return 1
+    return execute(args)
 
 
 if __name__ == "__main__":

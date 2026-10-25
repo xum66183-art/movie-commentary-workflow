@@ -20,7 +20,7 @@ python scripts/doctor.py --index
 python scripts/run_demo.py --output "$HOME/movie-workflow-demo"
 ```
 
-The output must be a new absolute path outside the repository, with no symlinks in the path or its parent directories. Choose a different path if it already exists. For a Release source archive, extract it, enter the complete source directory, and run the same installation and demo commands. Keep that directory: scripts, skills and contracts are loaded from the source tree. Supported distributions are the complete checkout or source archive. A wheel installs dependency metadata only; it does not contain standalone runnable tools.
+The output must be a new absolute path outside the repository, with no symlinks in the path or its parent directories. Choose a different path if it already exists. For a Release source archive, extract it, enter the complete source directory, and run the same installation and demo commands. Keep that directory: scripts, skills and contracts are loaded from the source tree. Supported distributions are the complete checkout or source archive. The wheel now includes the movie_workflow execution package; the index skills, templates and original demo still require the complete source tree.
 
 The demo creates six seconds of original geometric video, a synthetic tone and synthetic subtitles, then runs the real `prepare`, `search`, `evidence` and `verify` commands. The output includes an explanatory video, evidence clips, retrieval records and a SHA-256 manifest. Shareable files are under `$HOME/movie-workflow-demo/release/`; keep the `project/` directory local because it contains machine paths and databases. See the [demo guide](docs/demo.md) for outputs and checks.
 
@@ -71,3 +71,7 @@ python -m ruff check .
 ```
 
 Keep real footage, subtitles, voice references, generated narration, credentials, provider responses and production state in a private workspace. The repository distributes source, contracts and synthetic examples. The demo's generated public media is packaged separately as Release assets. Third-party services, models, film and audio remain subject to their own rights and terms; see the [public/private boundary](docs/open-source-boundary.md).
+
+## v0.4 execution tools
+
+Verified project-relative locks, paid-operation process locks and bounded Qwen VC plans, reversible skill upgrades, OCR-to-SRT grouping, and a cut-only renderer are available. Run `python -m movie_workflow.demo --project /absolute/path/to/new-private-demo` for an offline rendering fixture. It uses a labelled sine-tone mock narrator, makes no paid API calls and records no creative approval. See [execution tools](docs/execution-tools.md) for the supported plan contract.

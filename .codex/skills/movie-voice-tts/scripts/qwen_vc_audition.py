@@ -14,6 +14,8 @@ from urllib.parse import urlsplit, urlunsplit
 
 import requests
 
+from movie_workflow.voice_guard import guarded_operation
+
 BASE = "https://dashscope.aliyuncs.com/api/v1/services"
 MODEL = "qwen3-tts-vc-2026-01-22"
 
@@ -43,6 +45,7 @@ def register_body(audio, name):
     }
 
 
+@guarded_operation
 def run_trial(args):
     folder = args.operation_dir.resolve()
     folder.mkdir(parents=True, exist_ok=True)
@@ -50,7 +53,7 @@ def run_trial(args):
     key = os.environ.get("DASHSCOPE_API_KEY", "").strip()
     meta = None
     try:
-        if not key:
+        if not key and not args.dry_run:
             raise ValueError("缺少DASHSCOPE_API_KEY")
         audio = args.reference.read_bytes()
         text = args.text_file.read_text(encoding="utf-8").strip()

@@ -11,6 +11,11 @@ from typing import Any
 
 from jsonschema import Draft202012Validator, FormatChecker
 
+if __package__ in (None, ""):
+    import _bootstrap  # noqa: F401
+
+from movie_workflow.io import verify_reference
+
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SCHEMA_ROOT = REPOSITORY_ROOT / "schemas"
 
@@ -124,14 +129,10 @@ def artifact_errors(state: dict[str, Any], project_root: Path) -> list[str]:
     for lock_name, lock in state.get("locks", {}).items():
         if not isinstance(lock, dict):
             continue
-        value = lock.get("artifact") or lock.get("path")
-        if not value:
-            continue
-        path = Path(value)
-        if not path.is_absolute():
-            path = project_root / path
-        if not path.exists():
-            errors.append(f"locks.{lock_name} references missing artifact: {path}")
+        try:
+            verify_reference(project_root, lock)
+        except (OSError, ValueError) as exc:
+            errors.append(f"locks.{lock_name}: {exc}")
     return errors
 
 
@@ -167,7 +168,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--check-artifacts",
         action="store_true",
-        help="Also require lock artifact/path targets to exist",
+        help="Also verify lock artifact/path targets and SHA-256 fingerprints",
     )
     parser.add_argument("--json", action="store_true", help="Print a machine-readable result")
     return parser

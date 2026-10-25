@@ -25,8 +25,14 @@ def test_source_archive_contains_runnable_workflow(tmp_path: Path) -> None:
         REPOSITORY_ROOT,
         checkout,
         ignore=shutil.ignore_patterns(
-            ".git", ".venv", "__pycache__", ".pytest_cache", ".ruff_cache",
-            "*.egg-info", "build", "dist",
+            ".git",
+            ".venv",
+            "__pycache__",
+            ".pytest_cache",
+            ".ruff_cache",
+            "*.egg-info",
+            "build",
+            "dist",
         ),
     )
     release = tmp_path / "release"
@@ -43,12 +49,16 @@ def test_source_archive_contains_runnable_workflow(tmp_path: Path) -> None:
             if member.isfile():
                 target.parent.mkdir(parents=True, exist_ok=True)
                 target.write_bytes(archive.extractfile(member).read())
-    root, = extraction.iterdir()
+    (root,) = extraction.iterdir()
     assert len(list((root / ".codex/skills").glob("*/SKILL.md"))) == 8
     for required in (
-        "NOTICE", ".env.example", "scripts/macos/local_subtitle_ocr.swift",
-        ".codex/skills/movie-voice-tts/.env.example", "templates/film-project/.gitignore",
-        ".github/workflows/ci.yml", "tests/test_movie_index.py",
+        "NOTICE",
+        ".env.example",
+        "scripts/macos/local_subtitle_ocr.swift",
+        ".codex/skills/movie-voice-tts/.env.example",
+        "templates/film-project/.gitignore",
+        ".github/workflows/ci.yml",
+        "tests/test_movie_index.py",
     ):
         assert (root / required).is_file(), required
     run(root, "scripts/check_repository.py")

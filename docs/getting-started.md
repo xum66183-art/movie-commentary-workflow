@@ -15,7 +15,9 @@ python scripts/install_skills.py --dry-run
 python scripts/install_skills.py
 ```
 
-安装器复制八个技能到 `${CODEX_HOME:-$HOME/.codex}/skills`，遇到任意同名技能就停止，保留现有版本。需要更新时先备份已有技能，再选择新的安装位置或自行替换。重新打开 Codex 会话发现技能。也可以只在此仓库使用 `.codex/skills`，无需全局安装。
+执行上述 pip 安装会安装 `movie_workflow` 公共运行包；技能脚本需使用同一 Python 环境。
+
+安装器复制八个技能到 `${CODEX_HOME:-$HOME/.codex}/skills`，遇到任意同名技能就停止，保留现有版本。更新可用 `--upgrade --backup-directory /absolute/path/to/backup`，回滚与保护规则见[执行工具](execution-tools.md)。重新打开 Codex 会话发现技能。也可以只在此仓库使用 `.codex/skills`，无需全局安装。
 
 本版以 `pyproject.toml` 和上面的 pip 安装命令为准；未分发跨平台冻结锁。使用 uv 的用户可以按自己的平台生成锁文件。
 
@@ -23,7 +25,7 @@ python scripts/install_skills.py
 
 支持从完整 Git checkout 或完整源码归档运行。使用 Release 的源码 `.tar.gz` / `.zip` 时，先解压并进入含 `pyproject.toml` 的根目录，再执行上面的虚拟环境与 `pip install -e '.[index,dev]'` 命令。保留完整解压目录：脚本在运行时读取旁边的技能、Schema、模板和文档。
 
-当前构建的 wheel 仅提供依赖元数据，不包含可独立运行的工具或 CLI。单独 `pip install` wheel 不等于安装整套工作流；请使用 checkout 或完整源码归档。`MANIFEST.in` 指定源码包需要包含的文件，CI 中的源码分发测试检查解压后的校验、索引入口、环境诊断和技能安装。
+v0.4 wheel 包含 `movie_workflow` 公共执行包；索引技能、Schema、模板与原有演示仍需完整源码目录。整套工作流仍推荐使用 checkout 或完整源码归档。`MANIFEST.in` 指定源码包需要包含的文件，CI 中的源码分发测试检查解压后的校验、索引入口、环境诊断和技能安装。
 
 无需先安装 Codex 技能或填写密钥，就可以运行 [离线演示](demo.md)：
 
@@ -47,7 +49,7 @@ cp .env.example "$MOVIE_WORKFLOW_ENV_FILE"
 chmod 600 "$MOVIE_WORKFLOW_ENV_FILE"
 ```
 
-编辑私有配置文件，只填写所选供应商所需的字段。索引工具读取该配置文件；语音工具可用 `--env-file`，或读取 `MOVIE_WORKFLOW_ENV_FILE`。`doctor` 只显示当前进程中变量是否存在，不读取文件，也不显示值。
+编辑私有配置文件，只填写所选供应商所需的字段。索引工具读取该配置文件；语音工具可用 `--env-file`，或读取 `MOVIE_WORKFLOW_ENV_FILE`。`doctor` 默认检查当前进程；可用 `--config` 指定私有配置文件、`--provider` 选择供应商，只显示是否配置，不输出值。
 
 | 用途 | 必需配置 | 说明 |
 |---|---|---|
@@ -87,6 +89,6 @@ python .codex/skills/movie-voice-tts/scripts/movie_voice_tts.py qwen-vc-audition
 python .codex/skills/movie-voice-tts/scripts/movie_voice_tts.py qwen-vc-narrate --help
 ```
 
-`qwen-vc-narrate` 读取项目中已确认的文稿与音色锁，按段生成，复用同一音色。旧式锁格式要求路径为绝对路径；不要把真实锁文件提交到仓库。`--dry-run` 验证输入但不请求 API。结果未知的合成请求不会自动重发，先核查本地记录及账单。
+`qwen-vc-narrate` 读取项目中已确认的文稿与音色锁，按段生成，复用同一音色。锁支持 `artifact`/`path` 和项目相对路径，逐项验证指纹；不要把真实锁文件提交到仓库。`--dry-run` 验证输入但不请求 API。结果未知的合成请求不会自动重发，先核查本地记录及账单。
 
-文稿、旁白、时间戳和导演方案逐步锁定；用户认可样片后才扩展全片。镜头编排及各项目渲染仍由技能指导完成，本版不提供适用于任意电影的一键渲染器。流程与合同见[工作流](workflow.md)和[数据合同](data-contracts.md)。
+文稿、旁白、时间戳和导演方案逐步锁定；用户认可样片后才扩展全片。镜头编排及各项目渲染仍由技能指导完成，新增执行已锁定普通切镜方案的通用渲染器，使用范围见[执行工具](execution-tools.md)；它不自动决定镜头。流程与合同见[工作流](workflow.md)和[数据合同](data-contracts.md)。

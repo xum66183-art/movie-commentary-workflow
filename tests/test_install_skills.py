@@ -42,3 +42,32 @@ def test_installed_index_allows_private_projects_beside_skills(tmp_path: Path):
         module.project_root(skill / "private-project")
     with pytest.raises(ValueError):
         module.project_root(destination / "movie-direct" / "private-project")
+
+
+def test_upgrade_restores_existing_symlink(tmp_path):
+    from scripts.install_skills import rollback
+
+    dest = tmp_path / "skills"
+    dest.mkdir()
+    old = tmp_path / "old-skill"
+    old.mkdir()
+    (old / "SKILL.md").write_text("old")
+    link = dest / "movie-index"
+    link.symlink_to(old, target_is_directory=True)
+    backup = tmp_path / "backup"
+    install(dest, upgrade=True, backup_directory=backup)
+    assert not link.is_symlink()
+    rollback(backup, dest)
+    assert link.is_symlink() and (link / "SKILL.md").read_text() == "old"
+    assert len(list(dest.iterdir())) == 1
+
+
+def test_rollback_protects_local_changes(tmp_path):
+    from scripts.install_skills import rollback
+
+    dest, backup = tmp_path / "skills", tmp_path / "backup"
+    install(dest, backup_directory=backup)
+    (dest / "movie-index/SKILL.md").write_text("user edit")
+    with pytest.raises(ValueError, match="overwrite edits"):
+        rollback(backup, dest)
+    assert (dest / "movie-index/SKILL.md").read_text() == "user edit"

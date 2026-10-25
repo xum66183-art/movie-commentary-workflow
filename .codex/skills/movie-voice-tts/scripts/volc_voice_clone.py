@@ -14,6 +14,8 @@ from urllib.parse import urlsplit
 
 import requests
 
+from movie_workflow.voice_guard import guarded_operation
+
 BASE = "https://openspeech.bytedance.com/api/v3/tts"
 
 
@@ -48,6 +50,7 @@ def clone_body(reference, speaker, text):
     }
 
 
+@guarded_operation
 def run_trial(args):
     folder = args.operation_dir.resolve()
     folder.mkdir(parents=True, exist_ok=True)
@@ -55,7 +58,7 @@ def run_trial(args):
     meta = None
     key = os.environ.get("VOLCENGINE_TTS_API_KEY", "").strip()
     try:
-        if not key:
+        if not key and not args.dry_run:
             raise ValueError("缺少VOLCENGINE_TTS_API_KEY")
         audio = args.reference.read_bytes()
         text = args.text_file.read_text(encoding="utf-8").strip()
